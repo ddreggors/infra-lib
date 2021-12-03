@@ -1,0 +1,61 @@
+---
+- name: GitOps checkout
+  ansible.builtin.git:
+    repo: {{ repoURL }}
+    dest: /tmp/gitops-infra-config
+    version: {{ repoBranch }}
+
+- name: Deploy ArgoCD NameSpace
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    resource_definition: "{{ lookup('file', '{{ manifest_dir }}/argocd/argocd-operator/argocd-namespace.yaml') | from_yaml }}"
+  register: r_namespace
+
+- name: Deploy ArgoCD Catalog
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    resource_definition: "{{ lookup('file', '{{ manifest_dir }}/argocd/argocd-operator/argocd-catalogsource.yaml') | from_yaml }}"
+  register: r_catalog
+
+- name: Deploy ArgoCD OperatorGroup
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    resource_definition: "{{ lookup('file', '{{ manifest_dir }}/argocd/argocd-operator/argocd-operatorGroup.yaml') | from_yaml }}"
+  register: r_ogroup
+
+- name: Deploy ArgoCD Subscription
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    resource_definition: "{{ lookup('file', '{{ manifest_dir }}/argocd/argocd-operator/argocd-operatorSubscription.yaml') | from_yaml }}"
+  register: r_subscription
+
+- name: Deploy ArgoCD Cluster Role Bindings
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    resource_definition: "{{ lookup('file', '{{ manifest_dir }}/argocd/argocd-operator/cluster-role-binding.yaml') | from_yaml }}"
+  register: r_role_bindings
+
+- pause:
+    seconds: 30
+  when: >
+    r_namespace is changed or
+    r_catalog is changed or
+    r_ogroup is changed or
+    r_subscription is changed or
+    r_role_bindings is changed
+...

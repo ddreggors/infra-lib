@@ -1,0 +1,115 @@
+---
+- name: Run IPI Installer
+  command: openshift-install --dir={{ cluster_deploy_dir }}/{{ cluster_name }} create cluster
+  async: 3000
+  poll: 0
+  #register: cluster_deploy
+  when: cluster_deploy | bool | default('true')
+
+- name: Wait for config to be parsed
+  pause:
+    seconds: "{{ (cluster_delay / 4) | round | int }}"
+
+- name: Check for any fatal errors
+  import_tasks: fatal_error_check.yml
+
+- name: Wait for OpenShift Install
+  wait_for:
+    delay: "{{ (cluster_delay / 4) | round | int }}"
+    path: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    search_regex: "Consuming Install Config from target directory"
+  register: waitfor
+
+- debug:
+    msg: "OpenShift Install: Consuming Install Config"
+
+- name: Check for any fatal errors
+  import_tasks: fatal_error_check.yml
+
+- name: Wait for OpenShift Install
+  wait_for:
+    delay: "{{ (cluster_delay / 4) | round | int }}"
+    path: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    search_regex: Waiting up to 20m0s for the Kubernetes API at (?P<task>\w+\S+:\d{4})
+    sleep: 30
+    timeout: 1200
+  register: waitfor
+
+- debug:
+    msg: "OpenShift Install: Waiting up to 20M0s for Kubernetes API {{ waitfor['match_groupdict']['task'] }}"
+
+- name: Check for any fatal errors
+  import_tasks: fatal_error_check.yml
+
+- name: Wait for OpenShift Install
+  wait_for:
+    delay: "{{ cluster_delay | int }}"
+    path: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    search_regex: Waiting up to 30m0s for bootstrapping to complete
+    sleep: "{{ (cluster_delay / 2) | round | int }}"
+    timeout: 2500
+  register: waitfor
+
+- debug:
+    msg: "OpenShift Install: Waiting up to 30m0s for bootstrapping to complete"
+
+- name: Check for any fatal errors
+  import_tasks: fatal_error_check.yml
+
+- name: Wait for OpenShift Install
+  wait_for:
+    delay: "{{ cluster_delay | int }}"
+    path: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    search_regex: Destroying the bootstrap resources
+    sleep: "{{ (cluster_delay / 2) | round | int }}"
+    timeout: 1200
+  register: waitfor
+
+- debug:
+    msg: "OpenShift Install: Destroying the bootstrap resources"
+
+- name: Check for any fatal errors
+  import_tasks: fatal_error_check.yml
+
+- name: Wait for OpenShift Install
+  wait_for:
+    delay: "{{ cluster_delay | int }}"
+    path: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    search_regex: Waiting up to 40m0s for the cluster at (?P<task>\w+\S+:\d{4})
+    sleep: "{{ (cluster_delay / 2) | round | int }}"
+    timeout: 2400
+  register: waitfor
+
+- debug:
+    msg: "OpenShift Install: Waiting up to 40M0s for the cluster at {{ waitfor['match_groupdict']['task'] }}"
+
+- name: Check for any fatal errors
+  import_tasks: fatal_error_check.yml
+
+- name: Wait for OpenShift Install
+  wait_for:
+    delay: "{{ cluster_delay | int }}"
+    path: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    search_regex: Waiting up to 10m0s for the openshift-console route to be created
+    sleep: "{{ (cluster_delay / 2) | round | int }}"
+    timeout: 2400
+  register: waitfor
+
+- debug:
+    msg: "OpenShift Install: Waiting up to 10m0s for the openshift-console route to be created"
+
+- name: Check for any fatal errors
+  import_tasks: fatal_error_check.yml
+
+- name: Wait for OpenShift Install
+  wait_for:
+    delay: "{{ cluster_delay | int) }}"
+    path: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    search_regex: "Install complete"
+    sleep: "{{ (cluster_delay / 2) | round | int }}"
+    timeout: 2000
+  register: waitfor
+
+- debug:
+    msg: "OpenShift Install: Complete!"
+...

@@ -1,0 +1,68 @@
+# ---
+# ###############################
+# # main vars
+# ###############################
+# manifest_dir: '/tmp/gitops-infra-config/manifests'
+# repoURL: 'https://github.com/ddreggors/gitops-infra-config.git'
+# repoBranch: 'main'
+#
+# ###############################
+# # OCP cluster vars
+# ###############################
+# # Delay between cluster tasks
+# cluster_delay: 60
+# # Destroy any previously deployed cluster
+# cluster_destroy: False
+# # Deploy OCP
+# cluster_deploy: False
+# # Where on your provisioning host to
+# cluster_deploy_dir: ''
+# cluster_deploy_infranodes: False
+# # Remove openshift deployment directory before installing
+# cluster_rm_deploy_dir: False
+# # Install sealed secrets
+# cluster_sealedsecrets: False
+# # Install ArgoCD Operator
+# cluster_argocd_install: True
+# # Install ArgoCD application
+# cluster_argocd_day2: True
+# # Deploy Identity Providers (Google & Sealed Secret)
+# cluster_identity_providers: True
+# # Sealed Secrets Key, Needed if deploying Sealed Secrets from prior install.
+# sealed_secret_key: ''
+# # The name of your cluster
+# cluster_name: ''
+# cluster_kubeconfig: "{{ cluster_deploy_dir }}/{{ cluster_name }}/auth/kubeconfig"
+# cluster_api_vip: ''
+# cluster_ingress_vip: ''
+# # The base domain of the (without cluster name)
+# cluster_base_domain: ''
+# # The public ssh key to add to all nodes
+# cluster_ssh_pub_key: ''
+# # Cluster pull secret obtained from https://cloud.redhat.com/openshift/install/pull-secret.
+# # This should probably be excluded from here and vaulted so it doesn't end up in git
+# cluster_secret: |
+#  {% raw %}'{PULL SECRET HERE}'{% endraw %}
+# cluster_image_content_sources: |
+#   {% raw %}
+#   imageContentSources:
+#   - mirrors:
+#     - nexus.cluster_domain.com/docker_apps
+#     source: quay.io/openshift-release-dev/ocp-release
+#   - mirrors:
+#     - nexus.cluster_domain.com/docker_apps
+#     source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+#   {% endraw %}
+#
+# ###############################
+# # vcenter vars
+# ###############################
+# vcenter_hostname: ''
+# vcenter_username: ''
+# vcenter_password: ''
+# vcenter_datacenter: ''
+# vcenter_cluster: ''
+# vcenter_datastore: ''
+# vcenter_folder: ''
+# vcenter_network: 'VM Network'
+# ...

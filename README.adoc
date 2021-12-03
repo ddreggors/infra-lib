@@ -1,0 +1,42 @@
+= infra-lib
+David Dreggors <david.dreggors@redhat.com>; Vinny Valdez <vvaldez@redhat.com>; Ales Nosek <anosek@redhat.com>
+
+This repo contains a custom collection for deploying OpenShift, argocd, and can pulls a second repo to deploy a set of day 2 applications on top.
+
+This is a refactor of Jason Horn's original gitops work which can be found at https://github.com/hornjason/argocd-lab
+
+
+== Getting set up
+
+=== The variables
+
+The main variables file under `inventory/group_vars/provisioner` has all requires keys and default or example values where possible. Use this as a guide to start getting familiar with the required variables.
+
+There are 3 main variable groups...
+
+.Variable Groups
+|===
+|Variable Group |Description
+
+|Main vars
+|The main variables used determine pathing, git repositories, and branches used to setup manifests and charts for later gitops tasks.
+
+|Cluster vars
+|The varaiables that contain the information used to define and deploy your cluster
+
+|VCenter vars
+|The varaiables that contain credentials and connection details for vCenter
+|===
+
+For a details on indivdual variables see the link:docs/param_list.adoc[Param List]
+
+
+=== Inventory
+
+The inventory file (named `hosts.yml`) located under the `inventory` folder defines the details of how to connect to your provioning host.
+
+== Running the playbook
+
+----
+ansible-playbook -i inventory/hosts.yml deploy.yml
+----

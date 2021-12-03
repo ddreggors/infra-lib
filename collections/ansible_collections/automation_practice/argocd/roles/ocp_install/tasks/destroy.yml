@@ -1,0 +1,15 @@
+---
+- name: Destroy Openshift Cluster
+  command: openshift-install --dir={{ cluster_deploy_dir }}/{{ cluster_name }} destroy cluster
+  register: cluster_destroy
+  ignore_errors: yes
+
+- debug:
+    var: cluster_destroy
+    verbosity: 1
+
+- name: Delete OCP deployment dir
+  file:
+    path: "{{ cluster_deploy_dir }}"
+    state: absent
+...

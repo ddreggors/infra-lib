@@ -1,0 +1,9 @@
+---
+- name: Run IPI Installer
+  command: openshift-install --dir={{ cluster_deploy_dir }}/{{ cluster_name }} create cluster
+  register: cluster_deploy
+  when: cluster_deploy | bool | default('true')
+
+- debug:
+    var: cluster_deploy
+...

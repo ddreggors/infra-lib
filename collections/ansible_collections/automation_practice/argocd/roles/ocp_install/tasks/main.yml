@@ -1,0 +1,22 @@
+---
+- import_tasks: destroy.yml
+  when: cluster_destroy | bool
+
+- import_tasks: prep.yml
+  when: cluster_deploy | bool
+
+- import_tasks: install_async.yml
+  when:
+  - cluster_deploy | bool
+  - cluster_deploy_async | default(False) | bool
+
+- import_tasks: install.yml
+  when:
+  - cluster_deploy | bool
+  - not cluster_deploy_async | default(False) | bool
+
+- import_tasks: infra.yml
+  when: cluster_deploy_infranodes | bool
+
+- import_tasks: post.yml
+...

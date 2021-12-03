@@ -1,0 +1,56 @@
+apiVersion: v1
+baseDomain: {{ cluster_base_domain }}
+compute:
+- architecture: amd64
+  hyperthreading: Enabled
+  name: worker
+  platform:
+    vsphere:
+      coresPerSocket: 0
+      cpus: 8
+      memoryMB: 16384
+      osDisk:
+        diskSizeGB: 60
+  replicas: 3
+controlPlane:
+  architecture: amd64
+  hyperthreading: Enabled
+  name: master
+  platform:
+    vsphere:
+      coresPerSocket: 0
+      cpus: 4
+      memoryMB: 16384
+      osDisk:
+        diskSizeGB: 100
+  replicas: 3
+metadata:
+  creationTimestamp: null
+  name: {{ cluster_name }}
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  machineNetwork:
+  - cidr: 10.0.0.0/16
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - 172.30.0.0/16
+platform:
+  vsphere:
+    apiVIP: {{ cluster_api_vip }}
+    cluster: {{ vcenter_cluster }}
+    datacenter: {{ vcenter_datacenter }}
+    defaultDatastore: {{ vcenter_datastore }}
+    folder: /{{ vcenter_datacenter }}/vm/{{ vcenter_folder }}
+    ingressVIP: {{ cluster_ingress_vip }}
+    network: {{ vcenter_network | default('VM Network') }}
+    password: {{ vcenter_password }}
+    username: {{ vcenter_username }}
+    vCenter: {{ vcenter_hostname }}
+publish: External
+pullSecret: {{ cluster_secret }}
+sshKey: {{ cluster_ssh_pub_key }}
+{% if cluster_image_content_sources is defined %}
+{{ cluster_image_content_sources }}
+{% endif %}

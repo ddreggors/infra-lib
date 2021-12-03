@@ -1,0 +1,19 @@
+---
+- name: Deploy ArgoCD Lab Repo Secret
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    kind: Secret
+    wait: yes
+    definition: "{{ lookup('template', 'templates/secret.yaml.j2') | from_yaml }}"
+  when: sshPrivateKeyPath is defined
+
+- name: Deploy ArgoCD Lab Configmap
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    kind: ConfigMap
+    wait: yes
+    definition: "{{ lookup('template', 'templates/cm.yaml.j2') | from_yaml }}"

@@ -1,0 +1,10 @@
+---
+- name: Deploy Registry Image Pruner
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    namespace: openshift-image-registry
+    wait: yes
+    definition: "{{ lookup('file', '{{ manifest_dir }}/registry/base/image-pruner.yaml') | from_yaml }}"
+...

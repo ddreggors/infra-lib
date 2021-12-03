@@ -1,0 +1,6 @@
+---
+- import_tasks: deploy.yml
+- import_tasks: custom_resources.yml
+- import_tasks: repo_creds.yml
+  when: repoURL is defined
+...

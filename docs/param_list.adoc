@@ -1,0 +1,153 @@
+= Varables
+
+---
+
+
+.Main vars
+[cols="2,5a,2"]
+|===
+| Variable | Description | Default
+
+|manifest_dir
+|The location of the manifests directory on the local file system. This is usually the manifests directory under the location we cloned the gitops-infra-config repo to.
+|Default: `/tmp/gitops-infra-config/manifests`
+
+|repoURL
+|The url of the gitops-infra-config repo
+|Default: `https://github.com/ddreggors/gitops-infra-config.git`
+
+|repoBranch
+|The branch to use in the gitops-infra-config repo
+|Default: `main`
+
+|===
+
+
+.OCP cluster vars
+[cols="2,5a,2"]
+|===
+| Variable | Description | Default
+
+|cluster_delay
+|Delay between cluster tasks
+|Default: `60`
+
+|cluster_destroy
+|Destroy any previously deployed cluster
+|Default: `False`
+
+|cluster_deploy
+|Deploy OCP
+|Default: `False`
+
+|cluster_deploy_dir
+|The path on the provisioning host that you will install from. This is the value that fills `--dir=` for openshift-install
+|Default: `''`
+
+|cluster_deploy_infranodes
+|To deploy or not deploy infra nodes
+|Default: `False`
+
+
+|cluster_rm_deploy_dir
+|Remove openshift deployment directory before installing
+|Default: `False`
+
+|cluster_sealedsecrets
+|Remove openshift deployment directory before installing
+|Default: `False`
+
+|cluster_argocd_install
+|Install the ArgoCD Operator or not
+|Default: `True`
+
+|cluster_argocd_day2
+|Install the main ArgoCD application or not (required if cluster_argocd_install is true)
+|Default: `True`
+
+
+|cluster_identity_providers
+|Deploy Identity Providers (Google & Sealed Secret) or not
+|Default: `True`
+
+
+|sealed_secret_key
+|The Sealed Secrets Key to use, required if deploying Sealed Secrets.
+|Default: `''`
+
+|cluster_name
+|The name of your cluster
+|Default: `''`
+
+|cluster_kubeconfig
+|The path of the kubeconfig file for all OCP operations (changing this is not recommended)
+|Default: `"{{ cluster_deploy_dir }}/{{ cluster_name }}/auth/kubeconfig"`
+
+|cluster_api_vip
+|The API VIP address of the cluster
+|Default: `''`
+
+|cluster_ingress_vip
+|The Ingress VIP address of the cluster
+|Default: `''`
+
+|cluster_base_domain
+|The base domain of the (without cluster name)
+|Default: `''`
+
+|cluster_ssh_pub_key
+|The public ssh key to add to all nodes
+|Default: `''`
+
+|cluster_secret
+|Cluster pull secret obtained from https://cloud.redhat.com/openshift/install/pull-secret.
+This should probably be excluded from here and vaulted so it doesn't end up in git
+|Default: `''`
+
+|cluster_image_content_sources
+|The imageContentSources for your local mirror registry if you require obtained
+
+Default: ''
+
+|===
+
+.vCenter vars
+[cols="2,5a,2"]
+|===
+| Variable | Description | Default
+
+|vcenter_hostname
+|The hostname or ip of your vcenter host
+|Default: ''
+
+|vcenter_username
+|The username to login with on your vcenter host
+|Default: ''
+
+|vcenter_password
+|The password to login with on your vcenter host
+|Default: ''
+
+|vcenter_datacenter
+|The datacenter defined in vcenter that you will deploy your cluster to
+|Default: ''
+
+|vcenter_cluster
+|Your vcenter cluster name
+|Default: ''
+
+|vcenter_datastore
+|The datastore in vcenter you will use to store node/vm resources on
+|Default: ''
+
+|vcenter_folder
+|The folder that all nodes/vms resources will be deployed to in vcenter. This is created in the UI and is a logical grouping to keep your cluster resources separate from other resources.
+|Default: ''
+
+|vcenter_network
+|The vcenter network that all cluster resources will use
+|Default: 'VM Network'
+
+|===
+
+...

@@ -1,0 +1,15 @@
+---
+- name: Ensure ENV KUBECONFIG is defined
+  lineinfile:
+    path: "~/.bashrc"
+    regexp: "{{ item.regex }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regex: "export KUBECONFIG", line: "export KUBECONFIG={{ cluster_kubeconfig }}" }
+    - { regex: "alias {{ cluster_name }}pass", line: "alias {{ cluster_name }}pass='cat {{ cluster_deploy_dir }}/{{ cluster_name }}/auth/kubeadmin-password'" }
+
+- debug:
+    msg:
+      - ' .bashrc updated remember to source'
+      - ' source ~/.bashrc'
+...

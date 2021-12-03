@@ -1,0 +1,55 @@
+---
+- name: Deploy Custom Certs Lab Config in ArgoCD
+  community.kubernetes.k8s:
+   state: present
+   kubeconfig: "{{ cluster_kubeconfig }}"
+   wait: yes
+   definition: "{{ lookup('file', '{{ manifest_dir }}/custom-certs/overlays/lab/argocd-app-customcerts-lab.yaml') | from_yaml }}"
+
+- name: Deploy Infra Nodes Lab Config in ArgoCD
+  community.kubernetes.k8s:
+   state: present
+   kubeconfig: "{{ cluster_kubeconfig }}"
+   wait: yes
+   definition: "{{ lookup('file', '{{ manifest_dir }}/infra-nodes/overlays/lab/argocd-app-infranodes-lab.yaml') | from_yaml }}"
+
+- name: Deploy Registry Lab Config in ArgoCD
+  community.kubernetes.k8s:
+   state: present
+   kubeconfig: "{{ cluster_kubeconfig }}"
+   wait: yes
+   definition: "{{ lookup('file', '{{ manifest_dir }}/registry/overlays/lab/argocd-app-registry-lab.yaml') | from_yaml }}"
+
+- name: Deploy Registry Image Pruner
+  community.kubernetes.k8s:
+   state: present
+   kubeconfig: "{{ cluster_kubeconfig }}"
+   namespace: openshift-image-registry
+   wait: yes
+   definition: "{{ lookup('file', '{{ manifest_dir }}/registry/base/image-pruner.yaml') | from_yaml }}"
+
+
+- name: Migrate Metrics to Infra Nodes
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    definition: "{{ lookup('file', '{{ manifest_dir }}/migrate-metrics/overlays/lab/argocd-app-migratemetrics-lab.yaml') | from_yaml }}"
+
+- name: Deploy Cluster Users Lab Config in ArgoCD
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    definition: "{{ lookup('file', '{{ manifest_dir }}/cluster-users/overlays/lab/argocd-app-clusterusers-lab.yaml') | from_yaml }}"
+
+- name: Deploy Identity Provider Lab Config in ArgoCD
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    definition: "{{ lookup('file', '{{ manifest_dir }}/identity-provider/overlays/lab/argocd-app-idp-lab.yaml') | from_yaml }}"
+  when: cluster_identity_providers | bool
+
+...

@@ -1,0 +1,34 @@
+---
+- name: Check for any fatal errors in install log
+  lineinfile:
+    name: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    regexp: "level=fatal"
+    state: absent
+  check_mode: yes
+  register: fatal_check
+
+- when: (fatal_check is changed) or (fatal_check is failed)
+  block:
+  - name: Copy openshift-install.log contents
+    ansible.builtin.slurp:
+      src: "{{ cluster_deploy_dir }}/{{ cluster_name }}/.openshift_install.log"
+    register: install_log
+
+  - name: Build custom list of detected fatal errors
+    set_fact:
+      fatal_errors: "{{ fatal_errors | default([]) + [ line ] }}"
+    loop: "{{ (install_log['content'] | b64decode).split('\n') }}"
+    loop_control:
+      loop_var: line
+    when: >
+      "'level=error' in line" or
+      "'level=fatal' in line"
+
+  - name: Show fatal errors
+    debug:
+      var: fatal_errors
+
+  - name: Fail due to fatal errors
+    ansible.builtin.fail:
+      msg: Fatal errors detected!
+...

@@ -1,0 +1,7 @@
+secrets.yml
+openshift_config.ini
+ansible.log
+inventory/group_vars/provisioner/*
+!inventory/group_vars/provisioner/.gitkeep
+!inventory/group_vars/provisioner/main.yml
+inventory/myhosts.yaml

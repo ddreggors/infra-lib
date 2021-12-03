@@ -1,0 +1,23 @@
+---
+- name: Create OCP deployment dir
+  file:
+    path: "{{ cluster_deploy_dir }}/{{ cluster_name }}"
+    state: directory
+    recurse: yes
+    mode: '0755'
+
+- name: Template install-config.yaml into tmp_dir
+  template:
+    src: "install-config.j2"
+    dest: "{{ cluster_deploy_dir }}/{{ cluster_name }}/install-config.yaml"
+
+- name: Create a VM folder on given datacenter
+  community.vmware.vcenter_folder:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    datacenter_name: '{{ vcenter_datacenter }}'
+    folder_name: '{{ vcenter_folder }}'
+    folder_type: vm
+    state: present
+...

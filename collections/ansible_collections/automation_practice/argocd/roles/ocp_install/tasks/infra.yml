@@ -1,0 +1,42 @@
+---
+- name: Grab Cluster ID
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s_info:
+    kind: Infrastructure
+    api_version: config.openshift.io/v1
+    name: cluster
+  register: infra
+
+- set_fact:
+    cluster_id: "{{ infra.resources[0].status.infrastructureName }}"
+
+- debug:
+    msg: "{{ cluster_id }}"
+
+- name: Infra MachineSet
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    template:
+      path: 'infra_node_machineset.j2'
+
+- name: Check in Infra MachineSet is ready
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ cluster_kubeconfig }}"
+  community.kubernetes.k8s_info:
+    kind: MachineSet
+    api_version: machine.openshift.io/v1beta1
+    name: "{{ cluster_id }}-infra"
+    namespace: openshift-machine-api
+    wait: yes
+  register: infra_machine_set
+  until: >
+      infra_machine_set.resources[0].status.availableReplicas is defined and
+      infra_machine_set.resources[0].status.availableReplicas ==
+      infra_machine_set.resources[0].status.replicas
+  retries: 20
+  delay: "{{ cluster_delay | int }}"
+...
