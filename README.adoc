@@ -28,7 +28,7 @@ There are 3 main variable groups...
 |The varaiables that contain credentials and connection details for vCenter
 |===
 
-For a details on indivdual variables see the link:docs/param_list.adoc[Param List]
+For a details on indivdual variables see the link:docs/param_list.adoc[Variable Documentation]
 
 
 === Inventory
