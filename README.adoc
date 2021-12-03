@@ -2,7 +2,7 @@
 David Dreggors <david.dreggors@redhat.com>; Vinny Valdez <vvaldez@redhat.com>; Ales Nosek <anosek@redhat.com>
 
 This repo contains a custom Ansible Collection for deploying OpenShift, ArgoCD, and it clones a gitops repo that is used to deploy day 2 operations and applications in ArgoCD Applications.
-In the gitops repo the manifests directory is for Kustomize manifests and charts directory will contain helm charts, both of which ArgoCD will use to deploy Applications.
+In the gitops repo the manifests directory is for Kustomize manifests and the charts directory will contain helm charts, both of which ArgoCD will use to deploy Applications.
 By using Kustomize alongside Helm we can demonstrate the power and flexibility of ArgoCD.
 
 These repos are a refactor of Jason Horn's original gitops work which can be found at https://github.com/hornjason/argocd-lab
