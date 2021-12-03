@@ -1,5 +1,0 @@
-provisioner:
-  hosts:
-    provisioner:
-      ansible_host: 192.168.4.102
-      ansible_user: ddreggors
